@@ -4,7 +4,10 @@ from storage_service import StorageService
 
 
 class StorageController:
-    _storage_service = StorageService()
+    _storage_service: StorageService = None
+
+    def __init__(self):
+        self.switch()
 
     @staticmethod
     def _split_keys_and_apply_function(keys: str, function: callable):
@@ -13,7 +16,7 @@ class StorageController:
 
     def add(self, args: str):
         if not args:
-            print('Nothing to add')
+            print('Keys to add not provided')
             return
 
         self._split_keys_and_apply_function(args, self._storage_service.add)
@@ -27,17 +30,23 @@ class StorageController:
 
     def remove(self, args: str):
         if not args:
-            print('Nothing to remove')
+            print('Keys to remove not provided')
             return
 
         self._split_keys_and_apply_function(args, self._remove_key)
 
     def list(self, args):
-        print(' '.join(self._storage_service.list()))
+        data = self._storage_service.list()
+
+        if not data:
+            print('Empty')
+            return
+
+        print(' '.join(data))
 
     def find(self, args: str):
         if not args:
-            print('Nothing to find')
+            print('Keys to find not provided')
             return
 
         self._split_keys_and_apply_function(
@@ -45,7 +54,7 @@ class StorageController:
             lambda key: print(f'Key {key} {"" if self._storage_service.find(key) else "not "}exists')
         )
 
-    def grep(self, args):
+    def grep(self, args: str):
         if not args:
             print('Empty regexp')
             return
@@ -64,8 +73,36 @@ class StorageController:
 
         print(' '.join(keys_found))
 
-    def save(self):
-        pass
+    def save(self, args):
+        self._storage_service.save()
+        print('Saved successfully')
 
-    def load(self):
-        pass
+    def load(self, args):
+        self._storage_service.load()
+        print('Loaded successfully')
+
+    def exit(self, args):
+        self._ask_for_save()
+        exit(0)
+
+    def switch(self, args=None):
+        if self._storage_service:
+            self._ask_for_save()
+
+        username = input('Enter new username: ')
+        self._storage_service = StorageService(username)
+
+        self._ask_for_load()
+
+    def _ask_for_load(self):
+        if self._storage_service.is_exists():
+            answer = input('Container was found. Would you like to load it? (y/n): ')
+
+            if answer.lower() in ['y', 'yes']:
+                self._storage_service.load()
+
+    def _ask_for_save(self):
+        answer = input('Do you want to save container? (y/n): ')
+
+        if answer.lower() in ['y', 'yes']:
+            self._storage_service.save()
