@@ -4,7 +4,10 @@ class CLI:
     def __init__(self):
         self._commands = {}
 
-    def parse_command(self):
+    def add_command(self, command: str, function: callable):
+        self._commands[command] = function
+
+    def _parse_command(self):
         command_and_args = input('Enter command: ').split(maxsplit=1)
 
         if not command_and_args:
@@ -12,7 +15,7 @@ class CLI:
             return
 
         command = command_and_args[0]
-        args = command_and_args[1] if len(command_and_args) > 1 else None
+        args = command_and_args[1] if len(command_and_args) > 1 else ''
 
         function_to_call = self._commands.get(command)
 
@@ -22,9 +25,6 @@ class CLI:
 
         function_to_call(args)
 
-    @staticmethod
-    def start_application():
-        app = CLI()
-
+    def start_application(self):
         while True:
-            app.parse_command()
+            self._parse_command()
