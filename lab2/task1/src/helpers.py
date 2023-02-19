@@ -10,7 +10,7 @@ def calculate_amount_of_sentences(text: str) -> int:
 
 def calculate_amount_of_non_declarative_sentences(text: str) -> int:
     regex = r'\.+'
-    return len([*re.finditer(regex, text)])
+    return calculate_amount_of_sentences(text) - len([*re.finditer(regex, text)])
 
 
 def mean(list_of_numbers: list[float]) -> float:
