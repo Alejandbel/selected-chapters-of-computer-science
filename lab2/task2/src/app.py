@@ -32,4 +32,5 @@ class App:
 
         cli.add_command('help', self.print_possible_commands)
 
-        cli.start_application()
+        while True:
+            cli.parse_command()

@@ -7,7 +7,7 @@ class CLI:
     def add_command(self, command: str, function: callable):
         self._commands[command] = function
 
-    def _parse_command(self):
+    def parse_command(self):
         command_and_args = input('Enter command: ').split(maxsplit=1)
 
         if not command_and_args:
@@ -24,7 +24,3 @@ class CLI:
             return
 
         function_to_call(args)
-
-    def start_application(self):
-        while True:
-            self._parse_command()
